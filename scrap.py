@@ -6,7 +6,6 @@ def scrap(urls):
     list=[]
     PRODUCT_URL = urls
     header = {'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36 Edg/91.0.864.48",'Accept-Language':"en-US,en;q=0.9"}
-
     request = requests.get(PRODUCT_URL,headers=header)
     supe = BeautifulSoup(request.content,'lxml')
     title = supe.find('title')
