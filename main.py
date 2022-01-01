@@ -1,16 +1,37 @@
-from bs4 import BeautifulSoup
+import pandas as pd
 import requests
-import lxml
+import csv
+from scrap import scrap
+rows = []
+result_1 =""
+result_2 = ""
+fields = ['URL_1 ', 'URL_2 ' , 'TITLE MATCH RESULT' , 'DESCRIPTION MATCH RESULT'] 
+filename = "result_file.csv"
+data = pd.read_csv("urls.csv")
+web_data = {(data_row["URL_1"], data_row["URL_2"]): data_row for (index, data_row) in data.iterrows()}
+filename = "web_result.csv"  
+for i in web_data:
+        first_url = i[0]
+        first_data = scrap(first_url)
+        snd_url = i[1]
+        second_data = scrap(snd_url)
+        if first_data[0] == second_data[0]:
+                result_1 = 'Matched'
+        else:
+                result_1 = "Unmatched"
+        if first_data[1] == second_data[1]:
+                result_2 = 'Matched'
+        else:
+                result_2 = "Unmatched"
+        result_list = [first_url,snd_url, result_1,result_2]
+        rows.append(result_list)
 
-PRODUCT_URL = "https://leadsquared.com/empowering-organizations-with-the-power-of-high-velocity-sales/"
-header = {'User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36 Edg/91.0.864.48",'Accept-Language':"en-US,en;q=0.9"}
 
-request = requests.get(PRODUCT_URL,headers=header)
-supe = BeautifulSoup(request.content,'lxml')
-price = supe.find('title')
+with open(filename, 'w') as csvfile: 
+    csvwriter = csv.writer(csvfile) 
+    csvwriter.writerow(fields) 
+    csvwriter.writerows(rows)
 
-other = supe.find('meta' , property="og:description")
-real_price = price.get_text().lower()
-other = other['content'].lower()
-print(other)
-print(real_price)
+                
+
+        
